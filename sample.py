@@ -59,4 +59,9 @@ for song in check_song:
 
 # song genres are not exposed by spotify, instead we can get artist and album genres, though album genres can be blank.
 artist_genres = sp.artist(track["artists"][0]["id"])["genres"]
-print(artist_genres)
+print("Artist genres: ", artist_genres)
+
+
+# get a list of genres
+genre_list = sp.recommendation_genre_seeds()
+print(genre_list)
