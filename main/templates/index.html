@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}
+Index - Under Development
+{% endblock %}
+
+{% block content %}
+<header>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+
+    {{ message }}
+
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</header>
+
+<br>
+<br>
+
+<div>
+    <em>
+        This page is under development
+    </em>
+</div>
+{% endblock %}

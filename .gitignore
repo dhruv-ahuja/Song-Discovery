@@ -2,6 +2,7 @@
 Pipfile.lock
 .vscode 
 
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -131,3 +132,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+spotipy_auth.py
