@@ -6,6 +6,21 @@
 </title>
 
 <body>
+    <header>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+
+        {{ message }}
+        <br>
+        <hr noshade>
+        <br>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+    </header>
+
     {%block content %}{% endblock %}
 </body>
 
