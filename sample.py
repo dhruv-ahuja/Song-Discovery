@@ -48,7 +48,7 @@ for index, item in enumerate(recent_songs):
 
 # song recommendations system works similarly as well
 # seeds are nothing but a list of identifiers such as object ID or URL
-check_song = sp.recommendations(seed_tracks=[track_id])
+check_song = sp.recommendations(seed_tracks=[track_id], limit=1)
 
 
 # print(check_song["tracks"][0]["name"], check_song["tracks"][0]["album"])
@@ -59,7 +59,7 @@ for song in check_song:
 
 # song genres are not exposed by spotify, instead we can get artist and album genres, though album genres can be blank.
 artist_genres = sp.artist(track["artists"][0]["id"])["genres"]
-print("Artist genres: ", artist_genres)
+# print("Artist genres: ", artist_genres)
 
 
 # get a list of genres
