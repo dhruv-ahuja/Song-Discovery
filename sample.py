@@ -1,3 +1,4 @@
+from re import search
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth, SpotifyOauthError
 from dotenv import load_dotenv
@@ -65,3 +66,21 @@ artist_genres = sp.artist(track["artists"][0]["id"])["genres"]
 # get a list of genres
 genre_list = sp.recommendation_genre_seeds()
 print(genre_list)
+
+
+# recommendation = sp.recommendations(seed_tracks=["luz verde"], limit=1)
+
+# print(recommendation["tracks"][0]["name"])
+
+
+search_song = sp.search(q="luz verde maluma", limit=1, type="track")
+
+# print(search_song)
+
+n = search_song["tracks"]["items"][0]["name"]
+
+
+print(n)
+# print(search_song["tracks"]["items"][0].keys())
+
+# dict_keys(['album', 'artists', 'available_markets', 'disc_number', 'duration_ms', 'explicit', 'external_ids', 'external_urls', 'href', 'id', 'is_local', 'name', 'popularity', 'preview_url', 'track_number', 'type', 'uri'])

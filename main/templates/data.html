@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}
+Recommendations
+{% endblock %}
+
+{% block content %}
+
+{% for song_data in data %}
+
+{{ song_data [1] }} - {{ song_data [2] }}
+
+<img src="{{ song_data[3] }}" alt="Album Art" style="width:500px;height:500px;">
+
+{% endfor %}
+
+{% endblock %}
