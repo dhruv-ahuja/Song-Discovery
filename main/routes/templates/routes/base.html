@@ -4,6 +4,11 @@
 <title>
     {% block title %}{% endblock %}
 </title>
+<style>
+    div {
+        text-align: center;
+    }
+</style>
 
 <body>
     <header>
@@ -19,6 +24,10 @@
         {% endif %}
         {% endwith %}
 
+    </header>
+
+    <header style="text-align: right;">
+        <a href="{{ url_for('main.logout') }}">Logout</a>
     </header>
 
     {%block content %}{% endblock %}

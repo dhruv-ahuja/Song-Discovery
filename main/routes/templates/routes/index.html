@@ -14,7 +14,7 @@ Index - Under Development
         below.
     </p>
 
-    <a href="{{ url_for('auth_user') }}"><b> Check for authorization to access features </b></a>
+    <a href="{{ url_for('main.auth_user') }}"><b> Check for authorization to access features </b></a>
 
     {% endif %}
 </div>
@@ -36,7 +36,8 @@ Index - Under Development
 
     {% if session["token_info"] %}
 
-    <form name="get_data" method="post" action="{{ url_for('return_data') }}" onsubmit="return validateForm()">
+    <form name="get_search_data" method="post" action="{{ url_for('main.return_data') }}"
+        onsubmit="return validateForm()">
         <p>
             <b>Note:</b> <strong>You can enter multiple values into the field separated with a comma.</strong>
         </p>
