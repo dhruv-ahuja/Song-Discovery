@@ -90,7 +90,7 @@ def api_callback():
     return redirect(url_for("main.index"))
 
 
-@bp.route("/search", methods=["GET", "POST"])
+@bp.route("/search", methods=["POST"])
 def return_data():
     """
     Takes the user input, searches for it in Spotify's database and returns the 4 most relevant results.
@@ -169,6 +169,16 @@ def return_data():
             flash("You aren't logged in or your token has expired.")
 
             return redirect(url_for("main.index"))
+
+
+@bp.route("/recommendations")
+def recommendations(song_chosen, methods=["POST"]):
+
+    # if the user has accessed the URL through the address bar.
+    if request.method == "GET":
+        flash("Not authorized.")
+
+        return redirect(url_for("main.index"))
 
 
 @bp.route("/logout")

@@ -26,9 +26,11 @@
 
     </header>
 
+    {% if session["token_info"] %}
     <header style="text-align: right;">
         <a href="{{ url_for('main.logout') }}">Logout</a>
     </header>
+    {% endif %}
 
     {%block content %}{% endblock %}
 </body>
