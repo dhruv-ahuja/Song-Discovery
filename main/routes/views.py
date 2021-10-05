@@ -142,23 +142,29 @@ def return_data():
 
             # there can be many artists, arrange for that so that no artist is left out of search results
 
-            for item in search_song["tracks"]["items"]:
+            for idx, item in enumerate(search_song["tracks"]["items"]):
 
                 song_id = item["id"]
 
+                song_name = item["name"]
+
+                song_img = item["album"]["images"][0]["url"]
+
                 if len(item["artists"]) == 1:
                     song_artist = item["artists"][0]["name"]
+
+                    search_data.append(
+                        (song_id, song_artist, song_name, song_img, idx + 1)
+                    )
 
                 else:
                     song_artist = ""
                     for _ in item["artists"]:
                         song_artist = song_artist + _["name"] + ", "
 
-                song_name = item["name"]
-
-                song_img = item["album"]["images"][0]["url"]
-
-                search_data.append((song_id, song_artist[:-2], song_name, song_img))
+                    search_data.append(
+                        (song_id, song_artist[:-2], song_name, song_img, idx + 1)
+                    )
 
             return render_template("search.html", data=search_data)
 
@@ -171,14 +177,20 @@ def return_data():
             return redirect(url_for("main.index"))
 
 
-@bp.route("/recommendations")
-def recommendations(song_chosen, methods=["POST"]):
+@bp.route("/recommendations", methods=["POST"])
+def recommendations():
 
     # if the user has accessed the URL through the address bar.
     if request.method == "GET":
         flash("Not authorized.")
 
         return redirect(url_for("main.index"))
+
+    song = request.form
+
+    print(song["song_chosen"], "song chosen by user")
+
+    return redirect(url_for("main.index"))
 
 
 @bp.route("/logout")
