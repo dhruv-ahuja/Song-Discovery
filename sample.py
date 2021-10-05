@@ -65,7 +65,7 @@ artist_genres = sp.artist(track["artists"][0]["id"])["genres"]
 
 # get a list of genres
 genre_list = sp.recommendation_genre_seeds()
-print(genre_list)
+# print(genre_list)
 
 
 # recommendation = sp.recommendations(seed_tracks=["luz verde"], limit=1)
@@ -84,3 +84,21 @@ print(n)
 # print(search_song["tracks"]["items"][0].keys())
 
 # dict_keys(['album', 'artists', 'available_markets', 'disc_number', 'duration_ms', 'explicit', 'external_ids', 'external_urls', 'href', 'id', 'is_local', 'name', 'popularity', 'preview_url', 'track_number', 'type', 'uri'])
+
+
+top = sp.current_user_top_tracks(limit=20, time_range="medium_term")
+
+from json import dumps
+
+prettify = dumps(top, indent=4)
+# print(prettify)
+
+print(top["items"][0].keys())
+
+# top listened ki keys:
+# dict_keys(['album', 'artists', 'available_markets', 'disc_number', 'duration_ms', 'explicit', 'external_ids', 'external_urls', 'href', 'id', 'is_local', 'name', 'popularity', 'preview_url', 'track_number', 'type', 'uri']
+
+for item in top["items"]:
+    print(item["name"])
+
+print(top["items"][0]["album"]["images"][0]["url"])
