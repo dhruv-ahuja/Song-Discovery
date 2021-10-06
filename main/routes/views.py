@@ -3,7 +3,6 @@ import spotipy
 from os import getenv
 from functools import wraps
 
-from spotipy.oauth2 import SpotifyOAuth
 
 # initialize the blueprint containing the base functions of the application
 bp = Blueprint("main", __name__, template_folder="templates/routes")
@@ -20,13 +19,22 @@ def token_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
 
+        # if the user hasn't logged in
         if not session.get("token_info"):
 
             return redirect(url_for("main.index"))
 
+        # refresh the token if it has expired
         if spotipy.SpotifyOAuth.is_token_expired(session.get("token_info")):
 
-            return redirect(url_for("main.api_callback"))
+            refresh_token = session["token_info"]["refresh_token"]
+
+            get_new_token = init().refresh_access_token(refresh_token)
+
+            session["token_info"] = get_new_token
+
+            flash("Your token has been renewed.")
+            return redirect(url_for("main.index"))
 
         return f(*args, **kwargs)
 
@@ -56,13 +64,7 @@ def auth_user():
     if "token_info" not in session:
         # Don't reuse a SpotifyOAuth object because they store token info
         # and you could leak user tokens if you do reuse it
-        sp_auth = spotipy.oauth2.SpotifyOAuth(
-            client_id=client_id,
-            client_secret=client_secret,
-            redirect_uri=redirect_uri,
-            scope=scope,
-            show_dialog=True,
-        )
+        sp_auth = init()
 
         auth_url = sp_auth.get_authorize_url()
 
@@ -83,16 +85,7 @@ def api_callback():
     """
 
     # generate a new Oauth to prevent user token leaks
-    sp_auth = spotipy.oauth2.SpotifyOAuth(
-        client_id=client_id,
-        client_secret=client_secret,
-        redirect_uri=redirect_uri,
-        scope=scope,
-        show_dialog=True,
-    )
-
-    # cleaning any existing session data
-    # session.clear()
+    sp_auth = init()
 
     token = sp_auth.get_cached_token()
 
@@ -101,8 +94,6 @@ def api_callback():
 
     # making the session data permanent so that we can access it b/w requests
     session.permanent = True
-
-    flash("Token generated/refreshed.")
 
     return redirect(url_for("main.index"))
 
@@ -186,17 +177,7 @@ def recommendations(song_id):
     """
     Generate recommendations for the user based on the selected song.
     """
-    token = session["token_info"]["access_token"]
-
-    get_rec = spotipy.Spotify.recommendations(seed_tracks=[song_id], limit=10)
-
-    get_rec = get_rec["tracks"]
-
-    rec_data = []
-
-    for idx, item in enumerate(get_rec):
-        id = item["id"]
-        print(id)
+    return "OK"
 
 
 @bp.route("/logout")
@@ -210,15 +191,16 @@ def logout():
     return redirect(url_for("main.index"))
 
 
-# @bp.route("/refresh_token")
-# def refresh_token():
-#     """
-#     Refresh user token without logging them out.
-#     """
+def init():
+    """
+    Initialize the Spotify API object here
+    """
+    sp = spotipy.oauth2.SpotifyOAuth(
+        client_id=client_id,
+        client_secret=client_secret,
+        redirect_uri=redirect_uri,
+        scope=scope,
+        show_dialog=True,
+    )
 
-#     sp = spotipy.Spotify(auth=session["token_info"]["access_token"])
-
-#     is_expired = spotipy.SpotifyOAuth.is_token_expired(session["token_info"])
-
-
-#     return f"{x}"
+    return sp

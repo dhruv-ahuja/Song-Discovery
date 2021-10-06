@@ -20,19 +20,6 @@ Index
     {% endif %}
 </div>
 
-<script>
-    function validateForm() {
-        let x = document.forms["get_data"]["song_name"].value;
-
-        let y = document.forms["get_data"]["artist_name"].value;
-
-        if (!x && !y) {
-            alert("You need to fill out one field atleast.");
-            return false;
-        }
-    }
-</script>
-
 <div>
 
     {% if session["token_info"] %}
@@ -55,5 +42,18 @@ Index
     {% endif %}
 
 </div>
+
+<script>
+    function validateForm() {
+        let x = document.forms["get_search_data"]["song_name"].value;
+
+        let y = document.forms["get_search_data"]["artist_name"].value;
+
+        if (!x && !y) {
+            alert("You need to fill out one field atleast.");
+            return false;
+        }
+    }
+</script>
 
 {% endblock %}
