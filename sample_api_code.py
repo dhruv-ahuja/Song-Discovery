@@ -3,6 +3,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth, SpotifyOauthError
 from dotenv import load_dotenv
 import os
+from json import dumps
 
 load_dotenv()
 
@@ -27,20 +28,26 @@ sp = spotipy.Spotify(
     )
 )
 
+song_rec = sp.recommendations(seed_tracks=["3ngk8mwDOK0ALLtWIYyBI5"], limit=1)
 
-search_song = sp.search("Luz Verde", limit=4, type="track")
+prettify = dumps(song_rec, indent=2)
 
-for idx, item in enumerate(search_song["tracks"]["items"]):
+# print(prettify)
+print(song_rec["tracks"][0].keys())
 
-    song_id = item["id"]
+# search_song = sp.search("Luz Verde Maluma", limit=4, type="track")
 
-    song_name = item["name"]
+# for idx, item in enumerate(search_song["tracks"]["items"]):
 
-    song_img = item["album"]["images"][0]["url"]
+#     song_id = item["id"]
 
-    song_artist = item["artists"][0]["name"]
+#     song_name = item["name"]
 
-    print(song_artist, song_name)
+#     song_img = item["album"]["images"][0]["url"]
+
+#     song_artist = item["artists"][0]["name"]
+
+#     print(song_id)
 
 # get a dict of recently played songs, updates real-time afaik
 recent_songs = sp.current_user_recently_played(limit=1)

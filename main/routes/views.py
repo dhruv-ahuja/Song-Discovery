@@ -1,7 +1,9 @@
 from flask import *
 import spotipy
 from os import getenv
+from functools import wraps
 
+from spotipy.oauth2 import SpotifyOAuth
 
 # initialize the blueprint containing the base functions of the application
 bp = Blueprint("main", __name__, template_folder="templates/routes")
@@ -12,6 +14,23 @@ client_secret = getenv("CLIENT_SECRET")
 redirect_uri = getenv("REDIRECT_URI")
 
 scope = "user-library-read user-top-read user-read-recently-played user-library-modify"
+
+
+def token_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+
+        if not session.get("token_info"):
+
+            return redirect(url_for("main.index"))
+
+        if spotipy.SpotifyOAuth.is_token_expired(session.get("token_info")):
+
+            return redirect(url_for("main.api_callback"))
+
+        return f(*args, **kwargs)
+
+    return decorated_function
 
 
 @bp.route("/")
@@ -73,7 +92,7 @@ def api_callback():
     )
 
     # cleaning any existing session data
-    session.clear()
+    # session.clear()
 
     token = sp_auth.get_cached_token()
 
@@ -83,100 +102,123 @@ def api_callback():
     # making the session data permanent so that we can access it b/w requests
     session.permanent = True
 
+    flash("Token generated/refreshed.")
+
     return redirect(url_for("main.index"))
 
 
 @bp.route("/search", methods=["POST"])
+@token_required
 def return_data():
     """
     Takes the user input, searches for it in Spotify's database and returns the 4 most relevant results.
 
     """
-
     # check if the token is valid or not
     token_expired = spotipy.SpotifyOAuth.is_token_expired(session["token_info"])
 
-    if not token_expired:
+    # if the token has expired, use the logout function
+    # if token_expired:
 
-        token = session["token_info"]["access_token"]
+    #     flash("Your token has expired.")
+    #     return redirect(url_for("main.logout"))
 
-        session.modified = True
+    token = session["token_info"]["access_token"]
 
-        # request the form data submitted by the user
-        item = request.form
+    session.modified = True
 
-        song_name = item["song_name"]
-        artist_name = item["artist_name"]
+    # request the form data submitted by the user
+    item = request.form
 
-        # join the artist and the song name to be searched
-        song_name = artist_name + " " + song_name
+    song_name = item["song_name"]
+    artist_name = item["artist_name"]
 
-        sp = spotipy.Spotify(auth=session.get("token_info").get("access_token"))
+    # join the artist and the song name to be searched
+    song_name = artist_name + " " + song_name
 
-        try:
-            search_song = sp.search(song_name, limit=4, type="track")
+    sp = spotipy.Spotify(auth=session.get("token_info").get("access_token"))
 
-        except spotipy.exceptions.SpotifyException as e:
+    try:
+        search_song = sp.search(song_name, limit=4, type="track")
 
-            flash("Invalid input or access method")
-            return redirect(url_for("main.index"))
+    except spotipy.exceptions.SpotifyException as e:
 
-        except KeyError as e:
-
-            flash("Invalid input or access method")
-            return redirect(url_for("main.index"))
-
-        search_data = []
-
-        # there can be many artists, arrange for that so that no artist is left out of search results
-
-        for idx, item in enumerate(search_song["tracks"]["items"]):
-
-            song_id = item["id"]
-
-            song_name = item["name"]
-
-            song_img = item["album"]["images"][0]["url"]
-
-            if len(item["artists"]) == 1:
-                song_artist = item["artists"][0]["name"]
-
-                search_data.append((song_id, song_artist, song_name, song_img, idx + 1))
-
-            else:
-                song_artist = ""
-                for _ in item["artists"]:
-                    song_artist = song_artist + _["name"] + ", "
-
-                search_data.append(
-                    (song_id, song_artist[:-2], song_name, song_img, idx + 1)
-                )
-
-        return render_template("search.html", data=search_data)
-
-    else:
-        # if the token has expired, clear out the existing token information
-        session.clear()
-
-        flash("You aren't logged in or your token has expired.")
-
+        flash("Invalid input or access method")
         return redirect(url_for("main.index"))
 
+    except KeyError as e:
 
-@bp.route("/recommendations", methods=["POST"])
-def recommendations():
+        flash("Invalid input or access method")
+        return redirect(url_for("main.index"))
 
-    song = request.form
+    search_data = []
 
-    return redirect(url_for("main.index"))
+    # there can be many artists, arrange for that so that no artist is left out of search results
+
+    for idx, item in enumerate(search_song["tracks"]["items"]):
+
+        song_id = item["id"]
+
+        song_name = item["name"]
+
+        song_img = item["album"]["images"][0]["url"]
+
+        if len(item["artists"]) == 1:
+            song_artist = item["artists"][0]["name"]
+
+            search_data.append((song_id, song_artist, song_name, song_img, idx + 1))
+
+        else:
+            song_artist = ""
+            for value in item["artists"]:
+                song_artist = song_artist + value["name"] + ", "
+
+            search_data.append(
+                (song_id, song_artist[:-2], song_name, song_img, idx + 1)
+            )
+
+    return render_template("search.html", data=search_data)
+
+
+@bp.route("/song/<song_id>")
+@token_required
+def recommendations(song_id):
+    """
+    Generate recommendations for the user based on the selected song.
+    """
+    token = session["token_info"]["access_token"]
+
+    get_rec = spotipy.Spotify.recommendations(seed_tracks=[song_id], limit=10)
+
+    get_rec = get_rec["tracks"]
+
+    rec_data = []
+
+    for idx, item in enumerate(get_rec):
+        id = item["id"]
+        print(id)
 
 
 @bp.route("/logout")
 def logout():
     """
-    Log the user out of the application
+    Log the user out of the application.
     """
     session.clear()
     flash("You have been logged out.")
 
     return redirect(url_for("main.index"))
+
+
+# @bp.route("/refresh_token")
+# def refresh_token():
+#     """
+#     Refresh user token without logging them out.
+#     """
+
+#     sp = spotipy.Spotify(auth=session["token_info"]["access_token"])
+
+#     is_expired = spotipy.SpotifyOAuth.is_token_expired(session["token_info"])
+
+
+#     return f"{x}"
