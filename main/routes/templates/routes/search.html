@@ -7,21 +7,15 @@ Recommendations
 
 {% for song_data in data %}
 <div style="text-align: center;">
+
     <img src="{{ song_data[3] }}" alt="Album Art" style="width:300px;height:300px;">
     <br>
 
-
-    <form name="song_chosen" method="post" action="{{ url_for('main.recommendations') }}">
-
-        <button type="submit" name="song_chosen" value="{{ song_data [1] }} - {{ song_data [2] }}">
-
-            {{ song_data [1] }} - {{ song_data [2] }}
-
-        </button>
+    <a href="{{ url_for('main.recommendations', song_id=song_data[0]) }}">
+        {{ song_data[1] }} - {{ song_data[2] }}
+    </a>
 
 
-        <br><br>
-    </form>
 </div>
 
 {% endfor %}

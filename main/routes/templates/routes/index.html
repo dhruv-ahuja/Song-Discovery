@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Index - Under Development
+Index
 {% endblock %}
 
 {% block content %}
@@ -12,6 +12,7 @@ Index - Under Development
     <p>
         Hello and welcome to my website. To get started, first connect your Spotify account to the website from the link
         below.
+
     </p>
 
     <a href="{{ url_for('main.auth_user') }}"><b> Check for authorization to access features </b></a>
@@ -47,6 +48,7 @@ Index - Under Development
         <label for="artist_name">Artist Name</label><br>
         <input type="text" id="artist_name" name="artist_name"><br>
 
+        <br>
         <button type="submit">Submit</button>
     </form>
 
