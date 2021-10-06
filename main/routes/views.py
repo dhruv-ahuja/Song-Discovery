@@ -1,10 +1,6 @@
 from flask import *
 import spotipy
 from os import getenv
-from dotenv import load_dotenv
-
-
-load_dotenv
 
 
 # initialize the blueprint containing the base functions of the application
@@ -97,98 +93,80 @@ def return_data():
 
     """
 
-    # if the user has accessed the URL through the address bar.
-    if request.method == "GET":
-        flash("Not authorized.")
+    # check if the token is valid or not
+    token_expired = spotipy.SpotifyOAuth.is_token_expired(session["token_info"])
+
+    if not token_expired:
+
+        token = session["token_info"]["access_token"]
+
+        session.modified = True
+
+        # request the form data submitted by the user
+        item = request.form
+
+        song_name = item["song_name"]
+        artist_name = item["artist_name"]
+
+        # join the artist and the song name to be searched
+        song_name = artist_name + " " + song_name
+
+        sp = spotipy.Spotify(auth=session.get("token_info").get("access_token"))
+
+        try:
+            search_song = sp.search(song_name, limit=4, type="track")
+
+        except spotipy.exceptions.SpotifyException as e:
+
+            flash("Invalid input or access method")
+            return redirect(url_for("main.index"))
+
+        except KeyError as e:
+
+            flash("Invalid input or access method")
+            return redirect(url_for("main.index"))
+
+        search_data = []
+
+        # there can be many artists, arrange for that so that no artist is left out of search results
+
+        for idx, item in enumerate(search_song["tracks"]["items"]):
+
+            song_id = item["id"]
+
+            song_name = item["name"]
+
+            song_img = item["album"]["images"][0]["url"]
+
+            if len(item["artists"]) == 1:
+                song_artist = item["artists"][0]["name"]
+
+                search_data.append((song_id, song_artist, song_name, song_img, idx + 1))
+
+            else:
+                song_artist = ""
+                for _ in item["artists"]:
+                    song_artist = song_artist + _["name"] + ", "
+
+                search_data.append(
+                    (song_id, song_artist[:-2], song_name, song_img, idx + 1)
+                )
+
+        return render_template("search.html", data=search_data)
+
+    else:
+        # if the token has expired, clear out the existing token information
+        session.clear()
+
+        flash("You aren't logged in or your token has expired.")
 
         return redirect(url_for("main.index"))
-
-    if request.method == "POST":
-
-        # check if the token is valid or not
-        token_expired = spotipy.SpotifyOAuth.is_token_expired(session["token_info"])
-
-        if not token_expired:
-
-            token = session["token_info"]["access_token"]
-
-            session.modified = True
-
-            # request the form data submitted by the user
-            item = request.form
-
-            song_name = item["song_name"]
-            artist_name = item["artist_name"]
-
-            # join the artist and the song name to be searched
-            song_name = artist_name + " " + song_name
-
-            sp = spotipy.Spotify(auth=session.get("token_info").get("access_token"))
-
-            try:
-                search_song = sp.search(song_name, limit=4, type="track")
-
-            except spotipy.exceptions.SpotifyException as e:
-
-                flash("Invalid input or access method")
-                return redirect(url_for("main.index"))
-
-            except KeyError as e:
-
-                flash("Invalid input or access method")
-                return redirect(url_for("main.index"))
-
-            search_data = []
-
-            # there can be many artists, arrange for that so that no artist is left out of search results
-
-            for idx, item in enumerate(search_song["tracks"]["items"]):
-
-                song_id = item["id"]
-
-                song_name = item["name"]
-
-                song_img = item["album"]["images"][0]["url"]
-
-                if len(item["artists"]) == 1:
-                    song_artist = item["artists"][0]["name"]
-
-                    search_data.append(
-                        (song_id, song_artist, song_name, song_img, idx + 1)
-                    )
-
-                else:
-                    song_artist = ""
-                    for _ in item["artists"]:
-                        song_artist = song_artist + _["name"] + ", "
-
-                    search_data.append(
-                        (song_id, song_artist[:-2], song_name, song_img, idx + 1)
-                    )
-
-            return render_template("search.html", data=search_data)
-
-        else:
-            # if the token has expired, clear out the existing token information
-            session.clear()
-
-            flash("You aren't logged in or your token has expired.")
-
-            return redirect(url_for("main.index"))
 
 
 @bp.route("/recommendations", methods=["POST"])
 def recommendations():
 
-    # if the user has accessed the URL through the address bar.
-    if request.method == "GET":
-        flash("Not authorized.")
-
-        return redirect(url_for("main.index"))
-
     song = request.form
-
-    print(song["song_chosen"], "song chosen by user")
 
     return redirect(url_for("main.index"))
 

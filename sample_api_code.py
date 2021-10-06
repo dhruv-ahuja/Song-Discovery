@@ -28,6 +28,20 @@ sp = spotipy.Spotify(
 )
 
 
+search_song = sp.search("Luz Verde", limit=4, type="track")
+
+for idx, item in enumerate(search_song["tracks"]["items"]):
+
+    song_id = item["id"]
+
+    song_name = item["name"]
+
+    song_img = item["album"]["images"][0]["url"]
+
+    song_artist = item["artists"][0]["name"]
+
+    print(song_artist, song_name)
+
 # get a dict of recently played songs, updates real-time afaik
 recent_songs = sp.current_user_recently_played(limit=1)
 recent_songs = recent_songs["items"]
@@ -38,10 +52,10 @@ for index, item in enumerate(recent_songs):
     track = item["track"]
 
     # use a list slice or index to cut down on the amount of images displayed
-    print(track["album"]["images"][0]["url"])
+    # print(track["album"]["images"][0]["url"])
 
     # the response object is a json type-object full of nested data types, hence the use of [0] to extract what we need
-    print(index + 1, track["artists"][0]["name"], "-", track["name"])
+    # print(index + 1, track["artists"][0]["name"], "-", track["name"])
     last_song = track["name"]
     track_id = track["id"]
     album_data = track["album"]
@@ -54,8 +68,8 @@ check_song = sp.recommendations(seed_tracks=[track_id], limit=1)
 
 # print(check_song["tracks"][0]["name"], check_song["tracks"][0]["album"])
 
-for song in check_song:
-    print(check_song["tracks"][0]["name"])
+# for song in check_song:
+# print(check_song["tracks"][0]["name"])
 
 
 # song genres are not exposed by spotify, instead we can get artist and album genres, though album genres can be blank.
@@ -80,7 +94,7 @@ search_song = sp.search(q="luz verde maluma", limit=1, type="track")
 n = search_song["tracks"]["items"][0]["name"]
 
 
-print(n)
+# print(n)
 # print(search_song["tracks"]["items"][0].keys())
 
 # dict_keys(['album', 'artists', 'available_markets', 'disc_number', 'duration_ms', 'explicit', 'external_ids', 'external_urls', 'href', 'id', 'is_local', 'name', 'popularity', 'preview_url', 'track_number', 'type', 'uri'])
@@ -93,12 +107,12 @@ from json import dumps
 prettify = dumps(top, indent=4)
 # print(prettify)
 
-print(top["items"][0].keys())
+# print(top["items"][0].keys())
 
 # top listened ki keys:
 # dict_keys(['album', 'artists', 'available_markets', 'disc_number', 'duration_ms', 'explicit', 'external_ids', 'external_urls', 'href', 'id', 'is_local', 'name', 'popularity', 'preview_url', 'track_number', 'type', 'uri']
 
-for item in top["items"]:
-    print(item["name"])
+# for item in top["items"]:
+# print(item["name"])
 
-print(top["items"][0]["album"]["images"][0]["url"])
+# print(top["items"][0]["album"]["images"][0]["url"])
