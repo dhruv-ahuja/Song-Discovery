@@ -5,7 +5,6 @@ from flask import Flask
 # setting up the Flask app
 app = Flask(__name__)
 app.secret_key = "test"
-app.permanent_session_lifetime = timedelta(minutes=55)
 
 
 # importing blueprint(s)
