@@ -71,15 +71,6 @@ def return_data():
     Takes the user input, searches for it in Spotify's database and returns the 4 most relevant results.
 
     """
-    # check if the token is valid or not
-    token_expired = spotipy.SpotifyOAuth.is_token_expired(session["token_info"])
-
-    # if the token has expired, use the logout function
-    # if token_expired:
-
-    #     flash("Your token has expired.")
-    #     return redirect(url_for("main.logout"))
-
     token = session["token_info"]["access_token"]
 
     session.modified = True
@@ -143,7 +134,48 @@ def recommendations(song_id):
     """
     Generate recommendations for the user based on the selected song.
     """
-    return "OK"
+    # connect to the spotify api
+    sp = spotipy.Spotify(auth=session.get("token_info").get("access_token"))
+
+    song_rec = sp.recommendations(seed_tracks=[song_id], limit=10)
+
+    song_data = []
+
+    for _, item in enumerate(song_rec["tracks"]):
+
+        # song_id = item["id"]
+        song_url = song_rec["tracks"][0]["external_urls"]["spotify"]
+
+        # need to make spotify url embeddable by adding "/embed" before "/tracks"
+        embed_url = song_url.split(".com")
+        embed_url.insert(1, ".com/embed")
+        embed_url = "".join(embed_url)
+
+        song_name = item["name"]
+
+        song_img = item["album"]["images"][0]["url"]
+
+        if len(item["artists"]) == 1:
+            song_artist = item["artists"][0]["name"]
+
+            song_data.append((song_url, embed_url, song_artist, song_name, song_img))
+
+        else:
+            song_artist = ""
+            for value in item["artists"]:
+                song_artist = song_artist + value["name"] + ", "
+
+            song_data.append(
+                (song_url, embed_url, song_artist[:-2], song_name, song_img)
+            )
+
+    if song_name is None:
+        flash(f"{song_name} is None, perhaps problems with the API.")
+
+    if song_artist is None:
+        flash(f"{song_artist} is None, perhaps problems with the API.")
+
+    return render_template("recommendations.html", data=song_data)
 
 
 @bp.route("/logout")

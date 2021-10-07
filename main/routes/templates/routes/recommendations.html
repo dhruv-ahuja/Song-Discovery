@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}
+Song Recommendations
+{% endblock %}
+
+
+{% block content %}
+
+{% for item in data %}
+<div>
+    artist:{{ item[2] }} <br> song: {{ item[3] }} <br><br>
+
+
+</div>
+
+{% endfor %}
+
+{% endblock %}

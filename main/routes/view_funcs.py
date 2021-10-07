@@ -35,6 +35,8 @@ def token_required(f):
         # if the user hasn't logged in
         if not session.get("token_info"):
 
+            flash("Not logged in.")
+
             return redirect(url_for("main.index"))
 
         # refresh the token if it has expired
@@ -47,7 +49,6 @@ def token_required(f):
             session["token_info"] = get_new_token
 
             flash("Your token has been renewed.")
-            return redirect(url_for("main.index"))
 
         return f(*args, **kwargs)
 
