@@ -8,8 +8,12 @@ Song Recommendations
 
 {% for item in data %}
 <div>
-    artist:{{ item[2] }} <br> song: {{ item[3] }} <br><br>
+    <a href="{{ item[0] }}"> {{ item[3] }} <br> </a>
 
+    <!-- embeds the song clip in the webpage -->
+    <iframe src="{{ item[1] }}" width="50%" height="80" frameBorder="0" allowfullscreen=""
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+    <br> <br />
 
 </div>
 

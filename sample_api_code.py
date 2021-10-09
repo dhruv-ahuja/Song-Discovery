@@ -98,8 +98,10 @@ search_song = sp.search(q="luz verde maluma", limit=1, type="track")
 
 # print(search_song)
 
-n = search_song["tracks"]["items"][0]["name"]
+# n = search_song["tracks"]["items"][0]["name"]
 
+preview = search_song["tracks"]["items"][0]["uri"]
+print(preview)
 
 # print(n)
 # print(search_song["tracks"]["items"][0].keys())
