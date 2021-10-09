@@ -137,12 +137,15 @@ def recommendations(song_id):
     # connect to the spotify api
     sp = spotipy.Spotify(auth=session.get("token_info").get("access_token"))
 
-    song_rec = sp.recommendations(
-        seed_tracks=[song_id], limit=10, min_popularity=randrange(30, 80)
-    )
+    check_len = False
 
-    if len(song_rec) < 5:
-        song_rec
+    while not check_len:
+        song_rec = sp.recommendations(
+            seed_tracks=[song_id], limit=10, min_popularity=randrange(30, 80)
+        )
+
+        if len(song_rec) < 5:
+            check_len = True
 
     song_data = []
 
