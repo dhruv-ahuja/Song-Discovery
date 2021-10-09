@@ -4,6 +4,7 @@
 <title>
     {% block title %}{% endblock %}
 </title>
+
 <style>
     div {
         text-align: center;
@@ -29,6 +30,12 @@
     {% if session["token_info"] %}
     <header style="text-align: right;">
         <a href="{{ url_for('main.logout') }}">Logout</a>
+    </header>
+    {% endif %}
+
+    {% if request.base_url != 'http://127.0.0.1:5000/' %}
+    <header style="text-align: left;">
+        <a href=" {{ url_for('main.index') }}">Home</a>
     </header>
     {% endif %}
 
