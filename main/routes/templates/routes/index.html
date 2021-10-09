@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}
+Song Discovery
+{% endblock %}
+
+{% block content %}
+
+<div>
+    {% if not session["token_info"] %}
+
+    <p>
+        Hello and welcome to my website. To get started, first connect your Spotify account to the website from the link
+        below.
+
+    </p>
+
+    <a href="{{ url_for('main.auth_user') }}"><b> Check for authorization to access features </b></a>
+
+    {% endif %}
+</div>
+
+<div>
+
+    {% if session["token_info"] %}
+
+    <form name="get_search_data" method="post" action="{{ url_for('main.return_data') }}"
+        onsubmit="return validateForm()">
+        <p>
+            <b>Note:</b> <strong>You can enter multiple values into the field separated with a comma.</strong>
+        </p>
+        <label for="song_name">Song Name</label><br>
+        <input type="text" id="song_name" name="song_name"><br>
+
+        <label for="artist_name">Artist Name</label><br>
+        <input type="text" id="artist_name" name="artist_name"><br>
+
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+
+    {% endif %}
+
+</div>
+
+<script>
+    function validateForm() {
+        let x = document.forms["get_search_data"]["song_name"].value;
+
+        let y = document.forms["get_search_data"]["artist_name"].value;
+
+        if (!x && !y) {
+            alert("You need to fill out one field atleast.");
+            return false;
+        }
+    }
+</script>
+
+{% endblock %}

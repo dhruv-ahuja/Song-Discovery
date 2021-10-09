@@ -1,0 +1,45 @@
+<!doctype HTML>
+<html>
+
+<title>
+    {% block title %}{% endblock %}
+</title>
+
+<style>
+    div {
+        text-align: center;
+    }
+</style>
+
+<body>
+    <header>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+
+        {{ message }}
+        <br>
+        <hr noshade>
+        <br>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+    </header>
+
+    {% if session["token_info"] %}
+    <header style="text-align: right;">
+        <a href="{{ url_for('main.logout') }}">Logout</a>
+    </header>
+    {% endif %}
+
+    {% if request.base_url != 'http://127.0.0.1:5000/' %}
+    <header style="text-align: left;">
+        <a href=" {{ url_for('main.index') }}">Home</a>
+    </header>
+    {% endif %}
+
+    {%block content %}{% endblock %}
+</body>
+
+</html>
