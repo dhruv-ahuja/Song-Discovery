@@ -6,17 +6,27 @@ Song Recommendations
 
 {% block content %}
 
-{% for item in data %}
+
 <div>
-    <a href="{{ item[0] }}"> {{ item[3] }} <br> </a>
+    {% for item in data %}
+
+    <a href="{{ item[0] }}" target="_blank"> {{ item[3] }} </a><br>
+
+    <a href="{{ url_for('main.save_to_library', song_uri = item[0]) }}" target="_blank">
+        Save to Library
+    </a><br>
 
     <!-- embeds the song clip in the webpage -->
-    <iframe src="{{ item[1] }}" width="50%" height="80" frameBorder="0" allowfullscreen=""
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-    <br> <br />
 
+    <iframe src="{{ item[1] }}" width="50%" height="80" frameBorder="0" allowfullscreen=""
+        allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+    <br> <br>
+
+    {% endfor %}
+
+    <a href="{{ request.base_url }}">Load More</a>
 </div>
 
-{% endfor %}
+
 
 {% endblock %}

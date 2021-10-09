@@ -1,7 +1,7 @@
 from flask import *
 import spotipy
 from .view_funcs import *
-
+from random import randrange
 
 # initialize the blueprint containing the base functions of the application
 bp = Blueprint("main", __name__, template_folder="templates/routes")
@@ -137,19 +137,26 @@ def recommendations(song_id):
     # connect to the spotify api
     sp = spotipy.Spotify(auth=session.get("token_info").get("access_token"))
 
-    song_rec = sp.recommendations(seed_tracks=[song_id], limit=10)
+    song_rec = sp.recommendations(
+        seed_tracks=[song_id], limit=10, min_popularity=randrange(30, 80)
+    )
+
+    if len(song_rec) < 5:
+        song_rec
 
     song_data = []
 
     for _, item in enumerate(song_rec["tracks"]):
 
         # song_id = item["id"]
-        song_url = song_rec["tracks"][0]["external_urls"]["spotify"]
+        song_url = item["external_urls"]["spotify"]
 
         # need to make spotify url embeddable by adding "/embed" before "/tracks"
         embed_url = song_url.split(".com")
         embed_url.insert(1, ".com/embed")
         embed_url = "".join(embed_url)
+
+        song_url = item["uri"]
 
         song_name = item["name"]
 
@@ -176,6 +183,18 @@ def recommendations(song_id):
         flash(f"{song_artist} is None, perhaps problems with the API.")
 
     return render_template("recommendations.html", data=song_data)
+
+
+@bp.route("/save/<song_uri>")
+def save_to_library(song_uri):
+    """
+    Saves the user-selected song to library
+    """
+    save_song = spotipy.Spotify(
+        session["token_info"]["access_token"]
+    ).current_user_saved_tracks_add(tracks=[song_uri])
+
+    return "Saved the track to your library."
 
 
 @bp.route("/logout")
