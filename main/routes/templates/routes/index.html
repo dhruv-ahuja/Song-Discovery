@@ -6,7 +6,7 @@ Song Discovery
 
 {% block content %}
 
-<div>
+<div id="prompt">
     {% if not session["token_info"] %}
 
     <p>
@@ -20,7 +20,7 @@ Song Discovery
     {% endif %}
 </div>
 
-<div>
+<div id="index">
 
     {% if session["token_info"] %}
 

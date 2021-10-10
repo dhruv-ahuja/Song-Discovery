@@ -36,8 +36,6 @@ def auth_user():
 
         return redirect(auth_url)
 
-    flash("You have been authorized.")
-
     return redirect(url_for("main.index"))
 
 
@@ -60,6 +58,8 @@ def api_callback():
 
     # making the session data permanent so that we can access it b/w requests
     session.permanent = True
+
+    flash("You have been authorized.")
 
     return redirect(url_for("main.index"))
 

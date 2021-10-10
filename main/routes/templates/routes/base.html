@@ -5,19 +5,15 @@
     {% block title %}{% endblock %}
 </title>
 
-<style>
-    div {
-        text-align: center;
-    }
-</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
 <body>
-    <header>
+    <header id="flash">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         {% for message in messages %}
 
-        {{ message }}
+        <h3>{{ message }}</h3>
         <br>
         <hr noshade>
         <br>
@@ -27,17 +23,23 @@
 
     </header>
 
+
     {% if session["token_info"] %}
-    <header style="text-align: right;">
+    <header id="logout">
         <a href="{{ url_for('main.logout') }}">Logout</a>
     </header>
     {% endif %}
 
-    {% if request.base_url != 'http://127.0.0.1:5000/' %}
-    <header style="text-align: left;">
-        <a href=" {{ url_for('main.index') }}">Home</a>
+
+    <header id="logo">
+        <a href="{{ url_for('main.index') }}">
+            <img src="{{ url_for('static', filename='1.png') }}" alt="logo">
+        </a>
+
     </header>
-    {% endif %}
+
+
+
 
     {%block content %}{% endblock %}
 </body>
