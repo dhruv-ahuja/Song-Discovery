@@ -99,6 +99,17 @@ def return_data():
         flash("Invalid input or access method")
         return redirect(url_for("main.index"))
 
+    if search_song["tracks"]["items"] == []:
+        # the user query did not result in any parameters
+
+        flash(
+            "Your search did not bring up any songs. Please retry with different keywords."
+        )
+
+        return redirect(url_for("main.index"))
+
+    # return search_song
+
     search_data = []
 
     # there can be many artists, arrange for that so that no artist is left out of search results
@@ -197,7 +208,7 @@ def save_to_library(song_uri):
         session["token_info"]["access_token"]
     ).current_user_saved_tracks_add(tracks=[song_uri])
 
-    return "Saved the track to your library."
+    return render_template("save_to_library.html")
 
 
 @bp.route("/logout")
