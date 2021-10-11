@@ -10,7 +10,6 @@ body {
     max-width:85%; margin: 0 auto; background: white;
 }
 
-
 h3 {
     margin: 0%; color: #191414;
 }
@@ -25,6 +24,21 @@ a {
 
 hr {
     border: none; border-top: 1px solid lightgray; 
+}
+
+input {
+    min-width: 30%;
+    max-width: 65%;
+    padding: 7px 14px;
+    margin: 11px 0;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 2px solid #191414;
+    /* border-radius: 4px; */
+
+}
+input:focus {
+    border-bottom: 4px solid #1DB954;
 }
 
 #logout {
@@ -43,21 +57,47 @@ hr {
     text-align: center;
 }
 
+/* home page */
 #index {
     text-align: center;
 }
 
-input[type=submit] {
-     align-self: start; min-width: 10em; 
+#submit_search {
+     align-self: start; 
+     min-width: 30px; 
+     border: none;
+     background-color: #1DB954;
+     color: #191414;
+     padding: 12px 24px;
+     text-align: center;
+     text-decoration: none;
+     display: inline-block;
+     border-radius: 3px;
+     cursor: pointer;
+     border: 2px hidden #191414;
+     background-clip: padding-box;
+     box-sizing: border-box;
 }
 
+#submit_search:hover {
+    transition-duration: 0.3s;
+    background-color: #fff;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+
+}
+
+/* todo: form styling */
+
+
+/* results page */
 .container {
-    /* class for the results page */
     padding-bottom: 10px;
 }
 
 .results {
+    /* float: left; */
     text-align: center;
+    align-items: baseline;
     display: grid;
     gap: 10px 10px;
     padding: 1em 1em;
@@ -71,3 +111,22 @@ input[type=submit] {
 .results:hover {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
+
+.grid-item {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    
+}
+
+.grid-item1 {
+    grid-column-start: 1;
+    grid-column-end: 2;
+}
+
+.grid-item2 {
+    grid-column-start: 3;
+    grid-column-end: 4;
+}
+
+/* todo: button, form design
+    song recommendations page design */

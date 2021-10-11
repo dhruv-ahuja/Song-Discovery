@@ -27,16 +27,21 @@ Song Discovery
     <form name="get_search_data" method="post" action="{{ url_for('main.return_data') }}"
         onsubmit="return validateForm()">
         <p>
+            Search for song/artist of your choice and get song recommendations.
+        </p>
+
+        <p>
             <b>Note:</b> <strong>You can enter multiple values into the field separated with a comma.</strong>
         </p>
+
         <label for="song_name">Song Name</label><br>
-        <input type="text" id="song_name" name="song_name"><br>
+        <input type="text" name="song_name"><br>
 
         <label for="artist_name">Artist Name</label><br>
-        <input type="text" id="artist_name" name="artist_name"><br>
+        <input type="text" name="artist_name"><br>
 
         <br>
-        <button type="submit">Submit</button>
+        <button type="submit" id="submit_search">Submit</button>
     </form>
 
     {% endif %}
