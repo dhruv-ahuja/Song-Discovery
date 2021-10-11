@@ -3,37 +3,28 @@
 Search Results
 {% endblock %}
 
-{% block content %}
+{% block content -%}
 <br>
-{% for i in range(0, data|length, 2) %}
-<div class="results">
 
-    <div class="grid-item1">
+<div class="base-grid">
+    {% for item in data | batch(2) -%}
 
-        {% set x = data[i] %}
+    {% for song in item -%}
 
-        <img src="{{ x[3] }}" alt="Album Art" style="width:300px;height:300px;">
+    <div class="grid-child">
 
-        <a href="{{ url_for('main.recommendations', song_id=x[0]) }}">
-            <h4>{{ x[1] }} - {{ x[2] }}</h4>
-            <br>
-        </a>
+        <img src="{{ song[3] }}" alt="Album Art" style="width: 300px; height:300px;">
+
+        <b>{{ song[1] }} - {{ song[2] }}</b>
+
     </div>
 
-    <div class="grid-item2">
 
-        {% set y = data[i + 1] %}
+    {% endfor -%}
 
-        <img src="{{ y[3] }}" alt="Album Art" style="width:300px;height:300px;">
+    {% endfor -%}
 
-        <a href="{{ url_for('main.recommendations', song_id=y[0]) }}">
-            <h4>{{ y[1] }} - {{ y[2] }}</h4>
-            <br>
-        </a>
-    </div>
 
 </div>
 
-{% endfor %}
-
-{% endblock %}
+{% endblock -%}
