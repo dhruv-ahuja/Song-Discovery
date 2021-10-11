@@ -3,31 +3,45 @@
 Song Recommendations
 {% endblock %}
 
-
 {% block content %}
+<br>
+
+<div class="recommendations">
+    {% for item in data | batch(2) %}
+
+    {% for song in item %}
 
 
+    <div class="recomm_child">
+        <!-- link to the Spotify URI which opens in the app -->
+        <p>
+            <a href="{{ song[0] }}" target="_blank"> {{ song[3] }} </a>
+        </p>
 
-<div>
-    {% for item in data %}
+        <!-- make api call to save the song to user library  -->
+        <p>
+            <a href="{{ url_for('main.save_to_library', song_uri = song[0]) }}" target="_blank">
+                Save to Library
+            </a>
+        </p>
 
-    <a href="{{ item[0] }}" target="_blank"> {{ item[3] }} </a><br>
+        <!-- embeds the song clip into the webpage -->
+        <p>
+            <iframe id="embed" src="{{ song[1] }}" frameBorder="0" allowfullscreen=""
+                allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+        </p>
 
-    <a href="{{ url_for('main.save_to_library', song_uri = item[0]) }}" target="_blank">
-        Save to Library
-    </a><br>
-
-    <!-- embeds the song clip in the webpage -->
-
-    <iframe src="{{ item[1] }}" width="50%" height="80" frameBorder="0" allowfullscreen=""
-        allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-    <br> <br>
+    </div>
 
     {% endfor %}
 
-    <a href="{{ request.base_url }}">Load More</a>
+    {% endfor %}
+
 </div>
 
-
+<br>
+<span id="load_more">
+    <a href="{{ request.base_url }}">Load More</a>
+</span>
 
 {% endblock %}

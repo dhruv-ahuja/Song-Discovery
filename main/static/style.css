@@ -102,3 +102,30 @@ input:focus {
     align-items: center;
     font-size: larger;
   }
+
+
+/* recommendations page */
+#embed {
+    min-width: 60%;
+    max-width: 70%;
+    height: 380px;
+}
+
+.recommendations {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 15px;
+    row-gap: 50px;
+}
+
+.recomm_child {
+    display: flex;
+    flex-direction: column;
+    align-items: justify;
+    font-size: larger;
+    
+}
+
+#load_more {
+    text-align: center;
+}
