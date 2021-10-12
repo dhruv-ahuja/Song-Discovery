@@ -32,15 +32,15 @@ def token_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
 
-        # if the user hasn't logged in
-        if not session.get("token_info"):
+        # if the user hasn't logged in and is accessing the pages directly or through some work-around
+        if not session["token_info"]:
 
             flash("Not logged in.")
 
             return redirect(url_for("main.index"))
 
         # refresh the token if it has expired
-        if spotipy.SpotifyOAuth.is_token_expired(session.get("token_info")):
+        if spotipy.SpotifyOAuth.is_token_expired(session["token_info"]):
 
             refresh_token = session["token_info"]["refresh_token"]
 

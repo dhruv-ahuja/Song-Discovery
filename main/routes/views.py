@@ -69,8 +69,8 @@ def api_callback():
 def return_data():
     """
     Takes the user input, searches for it in Spotify's database and returns the 4 most relevant results.
-
     """
+    
     token = session["token_info"]["access_token"]
 
     session.modified = True
@@ -145,19 +145,21 @@ def recommendations(song_id):
     """
     Generate recommendations for the user based on the selected song.
     """
+    
     # connect to the spotify api
     sp = spotipy.Spotify(auth=session.get("token_info").get("access_token"))
 
+    # check the length of the response, if it's less than 5, we need to regenerate the data set
     check_len = False
-
     while not check_len:
         song_rec = sp.recommendations(
             seed_tracks=[song_id], limit=10, min_popularity=randrange(30, 80)
         )
 
-        if len(song_rec) < 5:
+        if len(song_rec) <= 5:
             check_len = True
 
+    # this is where we will store the extracted data to be sent to the html template
     song_data = []
 
     for _, item in enumerate(song_rec["tracks"]):
@@ -176,11 +178,13 @@ def recommendations(song_id):
 
         song_img = item["album"]["images"][0]["url"]
 
+        # if there's only one artist
         if len(item["artists"]) == 1:
             song_artist = item["artists"][0]["name"]
 
             song_data.append((song_url, embed_url, song_artist, song_name, song_img))
 
+        # if there are multiple artists, we'll add them one by one with commas as separators
         else:
             song_artist = ""
             for value in item["artists"]:
@@ -190,11 +194,13 @@ def recommendations(song_id):
                 (song_url, embed_url, song_artist[:-2], song_name, song_img)
             )
 
-    if song_name is None:
-        flash(f"{song_name} is None, perhaps problems with the API.")
+    # if no songs are generated for some reason
+    try:
+        if song_name == None or song_artist == None:
+            pass
 
-    if song_artist is None:
-        flash(f"{song_artist} is None, perhaps problems with the API.")
+    except:
+        return redirect(url_for("main.recommendations", song_id=song_id))
 
     return render_template("recommendations.html", data=song_data)
 
