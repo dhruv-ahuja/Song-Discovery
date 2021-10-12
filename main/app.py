@@ -20,6 +20,8 @@ from routes import views
 # test
 app.register_blueprint(views.bp)
 
-
-if __name__ == "__main__":
-    app.run(debug=True)
+if is_prod:
+    app.run()
+else:
+    if __name__ == "__main__":
+        app.run(debug=True)
