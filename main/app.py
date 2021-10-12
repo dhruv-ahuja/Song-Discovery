@@ -9,6 +9,7 @@ app.secret_key = "test"
 # importing blueprint(s)
 from routes import views
 
+# test
 app.register_blueprint(views.bp)
 
 
