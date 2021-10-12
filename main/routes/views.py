@@ -36,8 +36,6 @@ def auth_user():
 
         return redirect(auth_url)
 
-    flash("You have been authorized.")
-
     return redirect(url_for("main.index"))
 
 
@@ -60,6 +58,8 @@ def api_callback():
 
     # making the session data permanent so that we can access it b/w requests
     session.permanent = True
+
+    flash("You have been authorized.")
 
     return redirect(url_for("main.index"))
 
@@ -98,6 +98,17 @@ def return_data():
 
         flash("Invalid input or access method")
         return redirect(url_for("main.index"))
+
+    if search_song["tracks"]["items"] == []:
+        # the user query did not result in any parameters
+
+        flash(
+            "Your search did not bring up any songs. Please retry with different keywords."
+        )
+
+        return redirect(url_for("main.index"))
+
+    # return search_song
 
     search_data = []
 
@@ -197,7 +208,7 @@ def save_to_library(song_uri):
         session["token_info"]["access_token"]
     ).current_user_saved_tracks_add(tracks=[song_uri])
 
-    return "Saved the track to your library."
+    return render_template("save_to_library.html")
 
 
 @bp.route("/logout")

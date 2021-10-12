@@ -6,7 +6,6 @@ from flask import Flask
 app = Flask(__name__)
 app.secret_key = "test"
 
-
 # importing blueprint(s)
 from routes import views
 

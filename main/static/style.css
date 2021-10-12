@@ -1,0 +1,131 @@
+html {
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fff;
+    padding: 1em;
+    color: #191414;
+    
+}
+
+body {
+    max-width:85%; margin: 0 auto; background: white;
+} 
+
+h3 {
+    margin: 0%; color: #191414;
+}
+
+h4 {
+    margin: 0%; color: #191414;
+}
+
+a {
+    color:#1DB954;
+}
+
+hr {
+    border: none; border-top: 1px solid lightgray; 
+}
+
+input {
+    min-width: 30%;
+    max-width: 65%;
+    padding: 7px 14px;
+    margin: 11px 0;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 2px solid #191414;
+    /* border-radius: 4px; */
+
+}
+input:focus {
+    border-bottom: 4px solid #1DB954;
+}
+
+#logout {
+    float: right;
+}
+
+#logo {
+    text-align: left;
+}
+
+#flash {
+    margin: 0.2em 0;
+}
+
+#prompt {
+    text-align: center;
+} 
+
+/* home page */
+ #index {
+    text-align: center;
+}
+
+#submit_search {
+     align-self: start; 
+     min-width: 30px; 
+     border: none;
+     background-color: #1DB954;
+     color: #191414;
+     padding: 12px 24px;
+     text-align: center;
+     text-decoration: none;
+     display: inline-block;
+     border-radius: 3px;
+     cursor: pointer;
+     border: 2px hidden #191414;
+     background-clip: padding-box;
+     box-sizing: border-box;
+}
+
+#submit_search:hover {
+    transition-duration: 0.3s;
+    background-color: #fff;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+
+}
+
+/* results page */
+
+.base-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* grid-template-rows: repeat(5, 1fr); */
+    grid-column-gap: 15px;
+    grid-row-gap: 50px;
+  }
+
+.grid-child {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: larger;
+  }
+
+
+/* recommendations page */
+#embed {
+    min-width: 60%;
+    max-width: 70%;
+    height: 380px;
+}
+
+.recommendations {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 15px;
+    row-gap: 50px;
+}
+
+.recomm_child {
+    display: flex;
+    flex-direction: column;
+    align-items: justify;
+    font-size: larger;
+    
+}
+
+#load_more {
+    text-align: center;
+}

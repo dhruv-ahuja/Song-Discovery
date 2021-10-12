@@ -1,23 +1,32 @@
 {% extends "base.html" %}
 {% block title %}
-Recommendations
+Search Results
 {% endblock %}
 
 {% block content %}
+<br>
 
-{% for item in data %}
-<div>
+<div class="base-grid">
+    {% for item in data | batch(2) %}
 
-    <img src="{{ item[3] }}" alt="Album Art" style="width:300px;height:300px;">
-    <br>
+    {% for song in item %}
 
-    <a href="{{ url_for('main.recommendations', song_id=item[0]) }}">
-        {{ item[1] }} - {{ item[2] }}
-    </a>
+    <div class="grid-child">
 
+        <img src="{{ song[3] }}" alt="Album Art" style="width: 300px; height:300px;">
+
+        <a href="{{ url_for('main.recommendations', song_id = song[0]) }}">
+
+            <b>{{ song[1] }} - {{ song[2] }}</b>
+
+        </a>
+
+    </div>
+
+    {% endfor %}
+
+    {% endfor %}
 
 </div>
-
-{% endfor %}
 
 {% endblock %}
