@@ -11,9 +11,14 @@ is_prod = getenv("IS_HEROKU", None)
 
 # if we are in a production environment:
 if is_prod:
+
     app.secret_key = getenv("SECRET_KEY")
+    app.config["SESSION_TYPE"] = "filesystem"
+
 else:
+
     app.secret_key = "test"
+    # app.config["SESSION_TYPE"] = "filesystem"
 
 # importing blueprint(s)
 from routes import views
