@@ -57,7 +57,7 @@ def api_callback():
     session["token_info"] = token
 
     # making the session data permanent so that we can access it b/w requests
-    session.permanent = True
+    # session.permanent = True
 
     flash("You have been authorized.")
 
@@ -70,7 +70,7 @@ def return_data():
     """
     Takes the user input, searches for it in Spotify's database and returns the 4 most relevant results.
     """
-    
+
     token = session["token_info"]["access_token"]
 
     session.modified = True
@@ -145,7 +145,7 @@ def recommendations(song_id):
     """
     Generate recommendations for the user based on the selected song.
     """
-    
+
     # connect to the spotify api
     sp = spotipy.Spotify(auth=session.get("token_info").get("access_token"))
 
