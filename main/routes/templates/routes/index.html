@@ -6,6 +6,8 @@ Song Discovery
 
 {% block content %}
 
+{{ session["token_info"] }}
+
 <div id="prompt">
     {% if not session["token_info"] %}
 
