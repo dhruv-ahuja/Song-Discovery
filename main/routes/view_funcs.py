@@ -2,13 +2,14 @@
 import spotipy
 from functools import wraps
 from flask import flash, session, redirect, url_for
-from os import getenv
+
+# from os import getenv
 
 
 # setup env & scope to define access to the spotify web api
-client_id = getenv("CLIENT_ID")
-client_secret = getenv("CLIENT_SECRET")
-redirect_uri = getenv("REDIRECT_URI")
+client_id = CLIENT_ID
+client_secret = CLIENT_SECRET
+redirect_uri = REDIRECT_URI
 
 scope = "user-library-read user-top-read user-read-recently-played user-library-modify"
 
