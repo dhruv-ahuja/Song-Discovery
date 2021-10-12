@@ -1,4 +1,5 @@
 # from datetime import timedelta
+from logging import debug
 from flask import Flask
 from os import getenv
 
@@ -20,8 +21,6 @@ from routes import views
 # test
 app.register_blueprint(views.bp)
 
-if is_prod:
-    app.run()
-else:
-    if __name__ == "__main__":
-        app.run(debug=True)
+
+if __name__ == "__main__":
+    app.run(debug=True)
