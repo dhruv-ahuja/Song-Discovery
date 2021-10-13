@@ -57,7 +57,7 @@ def api_callback():
     session["token_info"] = token
 
     # making the session data permanent so that we can access it b/w requests
-    # session.permanent = True
+    session.permanent = True
 
     flash("You have been authorized.")
 
