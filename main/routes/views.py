@@ -9,6 +9,7 @@ bp = Blueprint("main", __name__, template_folder="templates/routes")
 
 
 @bp.route("/")
+@token_required
 def index():
     """
     the index route, will guide the user to authorization,
@@ -22,8 +23,8 @@ def index():
 
         return render_template("index.html", token_info=None)
 
-    # return f"{token_info}"
-
+    # print(spotipy.SpotifyOAuth.is_token_expired(token_info))
+    
     return render_template("index.html", token_info=token_info)
 
 

@@ -54,18 +54,21 @@ def token_required(f):
 
             return redirect(url_for("main.index"))
 
+        # return f"{spotipy.SpotifyOAuth.is_token_expired(token_info)}"
         if spotipy.SpotifyOAuth.is_token_expired(token_info):
             refresh_token = token_info.get("refresh_token")
 
             new_token_info = init().refresh_access_token(refresh_token)
-
+            # print(new_token_info, token_info)
             flash("Your token has been renewed.")
 
-        resp = make_response(f(*args, **kwargs))
+            resp = make_response(f(*args, **kwargs))
 
-        resp.set_cookie("token_info", f"{token_info}", max_age=43200)
+            resp.set_cookie("token_info", f"{new_token_info}", max_age=43200)
+        
+            return resp
 
-        return resp
+        return f(*args, **kwargs)
 
     return decorated_function
 
