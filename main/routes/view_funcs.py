@@ -11,7 +11,7 @@ client_id = getenv("CLIENT_ID")
 client_secret = getenv("CLIENT_SECRET")
 redirect_uri = getenv("REDIRECT_URI")
 
-scope = "user-library-read user-library-modify playlist-modify-public user-top-read"
+scope = "user-library-read user-top-read user-read-recently-played user-library-modify playlist-modify-public user-top-read"
 
 
 def init():
