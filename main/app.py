@@ -1,5 +1,4 @@
 # from datetime import timedelta
-from logging import debug
 from flask import Flask
 from os import getenv, urandom
 
@@ -13,7 +12,6 @@ is_prod = getenv("IS_HEROKU", None)
 if is_prod:
     app.secret_key = getenv("SECRET_KEY")
     
-
 else:
     app.secret_key = "test"
     
