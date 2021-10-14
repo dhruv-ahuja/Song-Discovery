@@ -5,10 +5,10 @@ name = "pypi"
 
 [packages]
 spotipy = "*"
-flask = "*"
+Flask = "*"
 python-dotenv = "*"
 gunicorn = "*"
-heroku = "*"
+jsonify = "*"
 
 [dev-packages]
 
