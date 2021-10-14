@@ -63,7 +63,7 @@ def token_required(f):
 
         resp = make_response(f(*args, **kwargs))
 
-        resp.set_cookie("token_info", f"{token_info}")
+        resp.set_cookie("token_info", f"{token_info}", max_age=43200)
 
         return resp
 

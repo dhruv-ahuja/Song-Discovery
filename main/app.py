@@ -11,14 +11,12 @@ is_prod = getenv("IS_HEROKU", None)
 
 # if we are in a production environment:
 if is_prod:
-    app.secret_key = urandom(24)
-    # app.config["SESSION_COOKIE_NAME"] = "current_session"
-    # app.config["SESSION_TYPE"] = "filesystem"
+    app.secret_key = getenv("SECRET_KEY")
+    
 
 else:
     app.secret_key = "test"
-    # app.config["SESSION_COOKIE_NAME"] = "current_session"
-    # app.config["SESSION_TYPE"] = "filesystem"
+    
 
 # importing blueprint(s)
 from routes import views
