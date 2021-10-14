@@ -11,7 +11,7 @@ client_id = getenv("CLIENT_ID")
 client_secret = getenv("CLIENT_SECRET")
 redirect_uri = getenv("REDIRECT_URI")
 
-scope = "user-library-read user-top-read user-read-recently-played user-library-modify playlist-modify-public user-top-read"
+scope = "user-library-read user-top-read user-library-modify playlist-modify-public"
 
 
 def init():
@@ -48,24 +48,23 @@ def token_required(f):
 
         except ValueError:
 
-            # means that token_info is none
+            # means that token_info is none, happens when token is expired or is being renewed
 
-            flash("Invalid call/not logged in")
+            # flash("Invalid call/not logged in")
 
             return redirect(url_for("main.index"))
 
-        # return f"{spotipy.SpotifyOAuth.is_token_expired(token_info)}"
         if spotipy.SpotifyOAuth.is_token_expired(token_info):
             refresh_token = token_info.get("refresh_token")
 
             new_token_info = init().refresh_access_token(refresh_token)
-            # print(new_token_info, token_info)
+
             flash("Your token has been renewed.")
 
             resp = make_response(f(*args, **kwargs))
 
             resp.set_cookie("token_info", f"{new_token_info}", max_age=43200)
-        
+
             return resp
 
         return f(*args, **kwargs)

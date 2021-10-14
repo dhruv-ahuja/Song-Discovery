@@ -9,7 +9,6 @@ bp = Blueprint("main", __name__, template_folder="templates/routes")
 
 
 @bp.route("/")
-@token_required
 def index():
     """
     the index route, will guide the user to authorization,
@@ -24,7 +23,7 @@ def index():
         return render_template("index.html", token_info=None)
 
     # print(spotipy.SpotifyOAuth.is_token_expired(token_info))
-    
+
     return render_template("index.html", token_info=token_info)
 
 
@@ -267,7 +266,7 @@ def logout():
     Log the user out of the application.
     """
     resp = make_response(redirect(url_for("main.index")))
-    resp.set_cookie("token_info", "", max_age=0)
+    resp.set_cookie("token_info", "", expires=0)
 
     flash("You have been logged out.")
 
