@@ -7,7 +7,7 @@ Song Discovery
 {% block content %}
 
 <div id="prompt">
-    {% if not session["token_info"] %}
+    {% if token_info == None %}
 
     <p>
         Hello and welcome to my website. To get started, first connect your Spotify account to the website from the link
@@ -22,7 +22,7 @@ Song Discovery
 
 <div id="index">
 
-    {% if session["token_info"] %}
+    {% if token_info %}
 
     <form name="get_search_data" method="post" action="{{ url_for('main.return_data') }}"
         onsubmit="return validateForm()">

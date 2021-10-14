@@ -24,7 +24,7 @@
     </header>
 
 
-    {% if session["token_info"] %}
+    {% if request.cookies.get("token_info") %}
     <header id="logout">
         <a href="{{ url_for('main.logout') }}">Logout</a>
     </header>

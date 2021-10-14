@@ -2,6 +2,7 @@ from flask import *
 import spotipy
 from .view_funcs import *
 from random import randrange
+import jsonify
 
 # initialize the blueprint containing the base functions of the application
 bp = Blueprint("main", __name__, template_folder="templates/routes")
@@ -14,7 +15,16 @@ def index():
     will connect the user with the application.
     """
 
-    return render_template("index.html")
+    try:
+        token_info = ast.literal_eval(request.cookies.get("token_info"))
+
+    except ValueError as e:
+
+        return render_template("index.html", token_info=None)
+
+    # return f"{token_info}"
+
+    return render_template("index.html", token_info=token_info)
 
 
 @bp.route("/auth")
@@ -27,14 +37,22 @@ def auth_user():
     Generates the authorization url which will contain the token information we need to get going.
     """
 
-    if "token_info" not in session:
-        # Don't reuse a SpotifyOAuth object because they store token info
-        # and you could leak user tokens if you do reuse it
-        sp_auth = init()
+    token_info = request.cookies.get("token_info")
 
-        auth_url = sp_auth.get_authorize_url()
+    if token_info is None:
+
+        auth_url = init().get_authorize_url()
 
         return redirect(auth_url)
+
+    # if "token_info" not in session:
+    #     # Don't reuse a SpotifyOAuth object because they store token info
+    #     # and you could leak user tokens if you do reuse it
+    #     sp_auth = init()
+
+    #     auth_url = sp_auth.get_authorize_url()
+
+    #     return redirect(auth_url)
 
     return redirect(url_for("main.index"))
 
@@ -48,20 +66,31 @@ def api_callback():
     Here, we once again, use the oauth2 method but this time to get user token information.
     """
 
+    code = request.args.get("code")
+
+    token_info = init().get_access_token(code)
+
+    resp = make_response(redirect(url_for("main.index")))
+    resp.set_cookie("token_info", f"{token_info}", max_age=43200)
+
+    flash("You've been authorized.")
+
+    return resp
+
     # generate a new Oauth to prevent user token leaks
-    sp_auth = init()
+    # sp_auth = init()
 
-    token = sp_auth.get_cached_token()
+    # token = init().get_cached_token()
 
-    # saving token information
-    session["token_info"] = token
+    # # saving token information
+    # session["token_info"] = token
 
-    # making the session data permanent so that we can access it b/w requests
-    session.permanent = True
+    # # making the session data permanent so that we can access it b/w requests
+    # session.permanent = True
 
-    flash("You have been authorized.")
+    # flash("You have been authorized.")
 
-    return redirect(url_for("main.index"))
+    # return redirect(url_for("main.index"))
 
 
 @bp.route("/search", methods=["POST"])
@@ -71,9 +100,11 @@ def return_data():
     Takes the user input, searches for it in Spotify's database and returns the 4 most relevant results.
     """
 
-    token = session["token_info"]["access_token"]
+    token_info = ast.literal_eval(request.cookies.get("token_info"))
 
-    session.modified = True
+    # token = session["token_info"]["access_token"]
+
+    # session.modified = True
 
     # request the form data submitted by the user
     item = request.form
@@ -84,7 +115,7 @@ def return_data():
     # join the artist and the song name to be searched
     song_name = artist_name + " " + song_name
 
-    sp = spotipy.Spotify(auth=session.get("token_info").get("access_token"))
+    sp = spotipy.Spotify(auth=token_info.get("access_token"))
 
     try:
         search_song = sp.search(song_name, limit=4, type="track")
@@ -146,8 +177,10 @@ def recommendations(song_id):
     Generate recommendations for the user based on the selected song.
     """
 
+    token_info = ast.literal_eval(request.cookies.get("token_info"))
+
     # connect to the spotify api
-    sp = spotipy.Spotify(auth=session.get("token_info").get("access_token"))
+    sp = spotipy.Spotify(auth=token_info.get("access_token"))
 
     # check the length of the response, if it's less than 5, we need to regenerate the data set
     check_len = False
@@ -155,6 +188,11 @@ def recommendations(song_id):
         song_rec = sp.recommendations(
             seed_tracks=[song_id], limit=10, min_popularity=randrange(30, 80)
         )
+
+        if len(song_rec) == 0:
+            song_rec = sp.recommendations(
+                seed_tracks=[song_id], limit=10, min_popularity=0
+            )
 
         if len(song_rec) <= 5:
             check_len = True
@@ -202,6 +240,8 @@ def recommendations(song_id):
     except:
         return redirect(url_for("main.recommendations", song_id=song_id))
 
+    # return song_data
+
     return render_template("recommendations.html", data=song_data)
 
 
@@ -210,8 +250,11 @@ def save_to_library(song_uri):
     """
     Saves the user-selected song to library
     """
+
+    token_info = ast.literal_eval(request.cookies.get("token_info"))
+
     save_song = spotipy.Spotify(
-        session["token_info"]["access_token"]
+        token_info.get("access_token")
     ).current_user_saved_tracks_add(tracks=[song_uri])
 
     return render_template("save_to_library.html")
@@ -222,7 +265,9 @@ def logout():
     """
     Log the user out of the application.
     """
-    session.clear()
+    resp = make_response(redirect(url_for("main.index")))
+    resp.set_cookie("token_info", "", max_age=0)
+
     flash("You have been logged out.")
 
-    return redirect(url_for("main.index"))
+    return resp
