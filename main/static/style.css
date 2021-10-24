@@ -3,7 +3,9 @@ html {
     background: #fff;
     /* padding: 1em; */
     color: #191414;
-    
+    font-size: large;
+    min-width: 419px;
+    width: auto !important; 
 }
 
 header {

@@ -50,8 +50,6 @@ def token_required(f):
 
             # means that token_info is none, happens when token is expired or is being renewed
 
-            # flash("Invalid call/not logged in")
-
             return redirect(url_for("main.index"))
 
         if spotipy.SpotifyOAuth.is_token_expired(token_info):
@@ -70,30 +68,3 @@ def token_required(f):
         return f(*args, **kwargs)
 
     return decorated_function
-
-
-# def token_required(f):
-#     @wraps(f)
-#     def decorated_function(*args, **kwargs):
-
-#         # if the user hasn't logged in and is accessing the pages directly or through some work-around
-#         if not session["token_info"]:
-
-#             flash("Not logged in.")
-
-#             return redirect(url_for("main.index"))
-
-#         # refresh the token if it has expired
-#         if spotipy.SpotifyOAuth.is_token_expired(session["token_info"]):
-
-#             refresh_token = session["token_info"]["refresh_token"]
-
-#             get_new_token = init().refresh_access_token(refresh_token)
-
-#             session["token_info"] = get_new_token
-
-#             flash("Your token has been renewed.")
-
-#         return f(*args, **kwargs)
-
-#     return decorated_function
